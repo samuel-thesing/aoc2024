@@ -1,8 +1,8 @@
 # Advent of Code C++ Template
 
-Du musst nur das Jahr in `generateDays.py` anpassen.
-
 Ich hatte keine Lust auf meine Seminararbeit und wollte irgendwie prokrastinieren ...
+
+Es muss nur das Jahr in `generateDays.py` angepasst werden.
 
 - `/templates` dises Dateien werden für jeden Tag kopiert, wenn `generateDays.py` ausgeführt wird (ein bisschen replace um den Tag und das Jahr reinzubringen)\
 - `/deps` libraries; für jetzt erstmal nur spdlog\
