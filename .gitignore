@@ -1,0 +1,5 @@
+.idea/
+cmake-build-debug/
+cmake-build-release/
+src/**/i1.txt
+src/**/t?.txt
