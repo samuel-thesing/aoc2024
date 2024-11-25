@@ -18,9 +18,9 @@
 #include <set>
 #include <iostream>
 
-#include <Logger.h>
+#include <Logger.hpp>
 
-#include "matrix.h"
+#include "matrix.hpp"
 
 
 /* ====================================================================================================
@@ -572,5 +572,62 @@ std::vector<size_t> find_all_idx(const std::string& s, const std::string& patter
 	return idxs;
 }
 
+template<typename T>
+std::ostream& operator<< (std::ostream& os, const std::vector<T>& list) {
+	os << "{ ";
+	for (int n : list) {
+		os << n << " ";
+	}
+	os << "}";
+	return os;
+}
+
+template<typename T>
+T sum(std::vector<T> list) {
+	auto sum = static_cast<T>(0);
+	for (auto n : list) {
+		sum += n;
+	}
+	return sum;
+}
+
+template <typename T>
+std::vector<std::vector<T>> create_mat(unsigned size, T fill = static_cast<T>(0)) {
+	return std::vector<std::vector<T>>(size, std::vector<T>(size, fill));
+}
+
+template <typename T>
+T max(std::vector<T> list) {
+	T max_val = list[0];
+	for (const auto& n : list) {
+		max_val = max(max_val, n);
+	}
+	return max_val;
+}
+
+template <typename T>
+T min(std::vector<T> list) {
+	T min_val = list[0];
+	for (const auto& n : list) {
+		min_val = min(min_val, n);
+	}
+	return min_val;
+}
+
+enum class Dir {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+};
+
+Vec2i dirVec(Dir dir) {
+	switch (dir) {
+    	case Dir::LEFT: return {-1, 0};
+    	case Dir::RIGHT: return {1, 0};
+    	case Dir::UP: return {0, -1};
+    	case Dir::DOWN: return {0, 1};
+	}
+}
 
 #endif //UTILS_H

@@ -1,4 +1,4 @@
-#include <utils.h>
+#include <utils.hpp>
 
 int solve(const std::string &input) {
 
