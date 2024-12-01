@@ -6,19 +6,14 @@ int solve(const std::string &input) {
     std::regex pattern("(\\d+)");
 
 	auto blocks = split(input, "\n\n");
-
-
 	for (const auto& block : blocks) {
 		auto lines = split(block, "\n");
 		auto lines2 = split_int(block, "\n");
-
-
         const auto [a] = extract_data<int>(block, std::regex("(\\d+)"));
 
 		for (const auto& line : lines) {
 
 		}
-
 	}
 
 	auto lines = split(input, "\n");
