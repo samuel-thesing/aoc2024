@@ -14,7 +14,10 @@
 #include <deque>
 #include <filesystem>
 #include <set>
+#include <map>
 #include <iostream>
+#include <functional>
+#include <sstream>
 
 #include <Logger.hpp>
 
