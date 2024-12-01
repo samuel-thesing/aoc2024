@@ -3,26 +3,24 @@
 int solve(const std::string &input) {
 	int result = 0;
 
-	auto blocks = split(input, "\n\n");
+    std::regex pattern("(\\d+)");
 
+	auto blocks = split(input, "\n\n");
 	for (const auto& block : blocks) {
 		auto lines = split(block, "\n");
 		auto lines2 = split_int(block, "\n");
-
-
-        const auto [] = extract_data<>(block, std::regex(""));
+        const auto [a] = extract_data<int>(block, std::regex("(\\d+)"));
 
 		for (const auto& line : lines) {
 
 		}
-
 	}
 
 	auto lines = split(input, "\n");
 	auto lines2 = split_int(input, "\n");
 
     for (const auto& line : lines) {
-    	const auto [] = extract_data<>(line, std::regex(""));
+    	const auto [a] = extract_data<int>(line, std::regex("(\\d+)"));
     }
 
 	return result;
