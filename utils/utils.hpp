@@ -113,6 +113,14 @@ std::string replace_all(const std::string& str, const std::string& pattern, cons
 	return str_cpy;
 }
 
+std::string replace_regex(const std::string& str, const std::regex& pattern, const char* replace) {
+	return std::regex_replace(str, pattern, replace, std::regex_constants::match_flag_type::format_first_only);
+}
+
+std::string replace_regex_all(const std::string& str, const std::regex& pattern, const char* replace) {
+	return std::regex_replace(str, pattern, replace);
+}
+
 size_t find_nth(const std::string& str, const std::string& pattern, size_t n) {
 	int count = 0;
 	size_t last_idx = str.find(pattern, n);
@@ -124,6 +132,16 @@ size_t find_nth(const std::string& str, const std::string& pattern, size_t n) {
 		++count;
 	}
 	return std::string::npos;
+}
+
+size_t find_nth(const std::string& str, const std::regex& pattern, size_t n) {
+	std::sregex_iterator iter(str.begin(), str.end(), pattern);
+	std::sregex_iterator end;
+	for (int i = 0; i < n && iter != end; ++iter, ++i) {}
+	if (iter == end) {
+		return std::string::npos;
+	}
+	return iter->position(0);
 }
 
 std::optional<std::string> replace_nth(const std::string& str, const std::string& pattern, std::string replace, int n) {
@@ -145,7 +163,8 @@ std::optional<std::string> replace_nth(const std::string& str, const std::string
  * @throws 0xDEAD If file could not be found or opened
  */
 std::string read_file(const std::string& filename) {
-	auto dir_name = std::filesystem::current_path().filename().string();
+	auto dir_name = std::filesystem::current_path().parent_path().filename().string();
+	dir_name = dir_name.substr(0, dir_name.size() - 2);
 	auto cwd = std::filesystem::current_path() / "../../../" / "src" / dir_name;
 	cwd = std::filesystem::canonical(cwd);
 	auto file = std::ifstream(cwd / filename, std::ios::binary | std::ios::in);
@@ -234,6 +253,42 @@ void printAdjacencyMatrix(const NamedTable<Key, Value>& mat,
  * Splitting
  */
 
+template<typename T>
+T string_to_generic(std::string s) {
+	Logger::critical("No implementation for generating this generic");
+	return T();
+}
+
+template<>
+inline std::string string_to_generic<std::string>(std::string s) {
+	return s;
+}
+
+template<>
+inline int string_to_generic<int>(std::string s) {
+	return std::stoi(s);
+}
+
+template<>
+inline long string_to_generic<long>(std::string s) {
+	return std::stol(s);
+}
+
+template<>
+inline double string_to_generic<double>(std::string s) {
+	return std::stod(s);
+}
+
+template<>
+inline char string_to_generic<char>(std::string s) {
+	return s[0];
+}
+template<>
+inline long long string_to_generic<long long>(std::string s) {
+	return std::stoll(s);
+}
+
+
 /**
  *	Splits a given string at the given delimiter and trims the parts
  *	@param s string to be split
@@ -282,8 +337,19 @@ std::vector<T> split(const std::string& s, const std::string& delim, std::functi
 	return result;
 }
 
+template<typename T>
+std::vector<T> split(const std::string& s, const std::string& delim) {
+	auto splitted = split(s, delim);
+	auto result = std::vector<T>();
+	result.reserve(splitted.size());
+	for (auto str : splitted) {
+		result.emplace_back(string_to_generic<T>(str));
+	}
+	return result;
+}
+
 std::vector<int> split_int(const std::string& s, const std::string& delim) {
-	return split<int>(s, delim, [](std::string s){return std::stoi(s);});
+	return split<int>(s, delim);
 }
 
 /**
@@ -299,6 +365,32 @@ std::pair<std::string, std::string> split_once(const std::string& s, const std::
 	}
 
 	return {s.substr(0, idx), s.substr(idx + delim.size())};
+}
+
+template<typename T>
+std::pair<T, T> split_once(const std::string& s, const std::string& delim) {
+	auto idx = s.find(delim);
+	if (idx == std::string::npos) {
+		return {s, ""};
+	}
+
+	return {
+		string_to_generic<T>(s.substr(0, idx)),
+		string_to_generic<T>(s.substr(idx + delim.size()))
+	};
+}
+
+template<typename T>
+std::pair<T, T> split_once(const std::string& s, const std::string& delim, std::function<T(std::string)> fn) {
+	auto idx = s.find(delim);
+	if (idx == std::string::npos) {
+		return {s, ""};
+	}
+
+	return {
+		fn(s.substr(0, idx)),
+		fn(s.substr(idx + delim.size()))
+	};
 }
 
 template<typename T, typename... Args> requires (std::is_same_v<T, Args...>)
@@ -321,40 +413,6 @@ T min(T t, U u) {
 	return t < u ? t : u;
 }
 
-
-
-template<typename T>
-T string_to_generic(std::string s) {
-	Logger::critical("No implementation for generating this generic");
-	return T();
-}
-
-template<>
-std::string string_to_generic<std::string>(std::string s) {
-	return s;
-}
-
-template<>
-int string_to_generic<int>(std::string s) {
-	return std::stoi(s);
-}
-
-template<>
-long string_to_generic<long>(std::string s) {
-	return std::stol(s);
-}
-
-template<>
-double string_to_generic<double>(std::string s) {
-	return std::stod(s);
-}
-
-template<>
-char string_to_generic<char>(std::string s) {
-	return s[0];
-}
-
-
 template<typename... Args, std::size_t... Indices>
 std::tuple<Args...> make_tuple_from_match(const std::smatch& match, std::index_sequence<Indices...>) {
 	return std::make_tuple<Args...>(string_to_generic<Args>(match[Indices + 1].str())...);
@@ -368,7 +426,7 @@ std::tuple<Args...> make_tuple_from_match(const std::smatch& match, std::index_s
  * @return tuple of the converted matches
  */
 template<typename... Args>
-std::tuple<Args...> extract_data(const std::regex& pattern, std::string s) {
+std::tuple<Args...> extract_data(std::string s, const std::regex& pattern) {
 	std::smatch match;
 	if (!std::regex_match(s, match, pattern)) {
 		Logger::critical("Failed to match regex for '{}'", s);
@@ -378,7 +436,7 @@ std::tuple<Args...> extract_data(const std::regex& pattern, std::string s) {
 }
 
 template<typename... Args>
-std::optional<std::tuple<Args...>> extract_data_opt(const std::regex& pattern, std::string s) {
+std::optional<std::tuple<Args...>> extract_data_opt(std::string s, const std::regex& pattern) {
 	std::smatch match;
 	if (!std::regex_match(s, match, pattern)) {
 		return std::nullopt;
@@ -391,6 +449,75 @@ std::vector<std::string> split_regex(const std::string& s, std::regex& pattern) 
 	std::sregex_token_iterator iter(s.begin(), s.end(), pattern, -1);
 	std::sregex_token_iterator end;
 	return {iter, end};
+}
+
+template<typename T>
+std::vector<std::string> split_regex(const std::string& s, std::regex& pattern) {
+	std::sregex_token_iterator iter(s.begin(), s.end(), pattern, -1);
+	std::sregex_token_iterator end;
+	auto result = std::vector<T>();
+	for (; iter != end; ++iter) {
+		result.emplace_back(string_to_generic<T>(*iter));
+	}
+	return result;
+}
+
+template<typename T>
+std::vector<std::string> split_regex(const std::string& s, std::regex& pattern, std::function<T(std::string)> fn) {
+	std::sregex_token_iterator iter(s.begin(), s.end(), pattern, -1);
+	std::sregex_token_iterator end;
+	auto result = std::vector<T>();
+	for (; iter != end; ++iter) {
+		result.emplace_back(fn(*iter));
+	}
+	return result;
+}
+
+std::pair<std::string, std::string> split_once_regex(const std::string& s, const std::regex& pattern) {
+	std::smatch match;
+	if (!std::regex_search(s, match, pattern)) {
+		Logger::critical("Failed to find regex in '{}'", s);
+	}
+
+	auto match_start = match.position(0);
+	auto match_end = match_start + match.length(0);
+
+	return {
+		s.substr(0, match_start),
+		s.substr(match_end)
+	};
+}
+
+template<typename T, typename U>
+std::pair<T, U> split_once_regex(const std::string& s, const std::regex& pattern) {
+	std::smatch match;
+	if (!std::regex_search(s, match, pattern)) {
+		Logger::critical("Failed to find regex in '{}'", s);
+	}
+
+	auto match_start = match.position(0);
+	auto match_end = match_start + match.length(0);
+
+	return {
+		string_to_generic<T>(s.substr(0, match_start)),
+		string_to_generic<U>(s.substr(match_end))
+	};
+}
+
+template<typename T>
+std::pair<T, T> split_once_regex(const std::string& s, const std::regex& pattern, std::function<T(std::string)> fn) {
+	std::smatch match;
+	if (!std::regex_search(s, match, pattern)) {
+		Logger::critical("Failed to find regex in '{}'", s);
+	}
+
+	auto match_start = match.position(0);
+	auto match_end = match_start + match.length(0);
+
+	return {
+		fn(s.substr(0, match_start)),
+		fn(s.substr(match_end))
+	};
 }
 
 std::vector<std::string> find_all_regex(const std::string& s, std::regex& pattern) {
@@ -658,7 +785,7 @@ enum class Dir {
 	DOWN
 };
 
-Vec2i dirVec(Dir dir) {
+Vec2i dir_vec(Dir dir) {
 	switch (dir) {
     	case Dir::LEFT: return {-1, 0};
     	case Dir::RIGHT: return {1, 0};

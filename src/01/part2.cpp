@@ -4,12 +4,13 @@ int solve(const std::string &input) {
 	int result = 0;
 
 	auto lines = split(input, "\n");
-	auto lines2 = split_int(input, "\n");
+
+	auto pattern = std::regex(" +");
 
 	std::vector<int> vec1{};
 	std::vector<int> vec2{};
 	for (const auto& line : lines) {
-		const auto [a, b] = extract_data<int, int>(std::regex("(\\d+) *(\\d+)"), line);
+		const auto [a, b] = split_once_regex<int, int>(line, pattern);
 		vec1.push_back(a);
 		vec2.push_back(b);
 	}

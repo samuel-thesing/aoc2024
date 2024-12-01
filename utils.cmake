@@ -2,11 +2,11 @@
 # CMAKE UTILITY FUNCTIONS
 #
 
-function(target_set_output_dir target)
+function(target_set_output_dir target dir)
     set_target_properties(${target} PROPERTIES
-            ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_ARTEFACT_DIR}/${target}/${CMAKE_BUILD_TYPE}/"
-            LIBRARY_OUTPUT_DIRECTORY "${PROJECT_ARTEFACT_DIR}/${target}/${CMAKE_BUILD_TYPE}/"
-            RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ARTEFACT_DIR}/${target}/${CMAKE_BUILD_TYPE}")
+            ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_ARTEFACT_DIR}/${dir}/${CMAKE_BUILD_TYPE}/"
+            LIBRARY_OUTPUT_DIRECTORY "${PROJECT_ARTEFACT_DIR}/${dir}/${CMAKE_BUILD_TYPE}/"
+            RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ARTEFACT_DIR}/${dir}/${CMAKE_BUILD_TYPE}")
 endfunction()
 
 function(target_link_dependency target type name)
