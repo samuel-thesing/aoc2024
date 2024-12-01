@@ -13,8 +13,6 @@
 #include <unordered_set>
 #include <deque>
 #include <filesystem>
-#include <Logger.h>
-#include <utils.h>
 #include <set>
 #include <iostream>
 
@@ -281,6 +279,10 @@ std::vector<T> split(const std::string& s, const std::string& delim, std::functi
 	return result;
 }
 
+std::vector<int> split_int(const std::string& s, const std::string& delim) {
+	return split<int>(s, delim, [](std::string s){return std::stoi(s);});
+}
+
 /**
  *	Splits a given string at the first occurrence of the given delimiter and returns both parts as pair
  *	@param s string to be split
@@ -372,6 +374,34 @@ std::tuple<Args...> extract_data(const std::regex& pattern, std::string s) {
 	return make_tuple_from_match<Args...>(match, std::index_sequence_for<Args...>{});
 }
 
+template<typename... Args>
+std::optional<std::tuple<Args...>> extract_data_opt(const std::regex& pattern, std::string s) {
+	std::smatch match;
+	if (!std::regex_match(s, match, pattern)) {
+		return std::nullopt;
+	}
+
+	return make_tuple_from_match<Args...>(match, std::index_sequence_for<Args...>{});
+}
+
+std::vector<std::string> split_regex(const std::string& s, std::regex& pattern) {
+	std::sregex_token_iterator iter(s.begin(), s.end(), pattern, -1);
+	std::sregex_token_iterator end;
+	return {iter, end};
+}
+
+std::vector<std::string> find_all_regex(const std::string& s, std::regex& pattern) {
+	std::sregex_iterator iter(s.begin(), s.end(), pattern);
+	std::sregex_iterator end;
+	std::vector<std::string> result{};
+	while (iter != end) {
+		std::smatch match = *iter;
+		result.push_back(match[1]);
+		++iter;
+	}
+	return result;
+}
+
 bool isDigit(char c) {
 	return '0' <= c && c <= '9';
 }
@@ -382,6 +412,10 @@ bool isLowercase(char c) {
 
 bool isUppercase(char c) {
 	return 'A' <= c && c <= 'Z';
+}
+
+bool isHex(char c) {
+	return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
 }
 
 std::string format_time(std::chrono::duration<std::chrono::nanoseconds::rep, std::chrono::nanoseconds::period> duration) {
@@ -575,8 +609,8 @@ std::vector<size_t> find_all_idx(const std::string& s, const std::string& patter
 template<typename T>
 std::ostream& operator<< (std::ostream& os, const std::vector<T>& list) {
 	os << "{ ";
-	for (int n : list) {
-		os << n << " ";
+	for (const T& n : list) {
+		os << n << ", ";
 	}
 	os << "}";
 	return os;
@@ -628,6 +662,163 @@ Vec2i dirVec(Dir dir) {
     	case Dir::UP: return {0, -1};
     	case Dir::DOWN: return {0, 1};
 	}
+}
+
+std::string str(char c) {
+	return {c};
+}
+
+std::string str(int i) {
+	return std::to_string(i);
+}
+
+std::string str(double i) {
+	return std::to_string(i);
+}
+
+std::string str(long i) {
+	return std::to_string(i);
+}
+
+std::string str(uint64_t i) {
+	return std::to_string(i);
+}
+
+std::vector<size_t> find_all_idx(const std::string& s, char pattern) {
+	return find_all_idx(s, str(pattern));
+}
+
+size_t find_nth(const std::string& s, char pattern, size_t n) {
+	return find_nth(s, str(pattern), n);
+}
+
+std::string replace_all(const std::string& s, char pattern, const std::string& replace) {
+	return replace_all(s, str(pattern), replace);
+}
+
+template<typename T>
+std::vector<T> max_n(std::vector<T> list, size_t n) {
+	std::sort(list.begin(), list.end(), std::greater<T>());
+	if (list.size() < n) {
+		return list;
+	}
+	return std::vector<T>(list.begin(), list.begin() + n);
+}
+
+template<typename T>
+std::vector<T> min_n(std::vector<T> list, size_t n) {
+	std::sort(list.begin(), list.end(), std::less<T>());
+	if (list.size() < n) {
+		return list;
+	}
+	return std::vector<T>(list.begin(), list.begin() + n);
+}
+
+template<typename T>
+std::set<T> set_intersection(std::set<T> a, std::set<T> b) {
+	std::set<T> res{};
+	std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::inserter(res, res.begin()));
+	return res;
+}
+
+template<typename T>
+std::set<T> set_sym_diff(std::set<T> a, std::set<T> b) {
+	std::set<T> res{};
+	std::set_symmetric_difference(a.begin(), a.end(), b.begin(), b.end(), std::inserter(res, res.begin()));
+	return res;
+}
+
+template<typename T>
+std::set<T> set_diff(std::set<T> a, std::set<T> b) {
+	std::set<T> res{};
+	std::set_difference(a.begin(), a.end(), b.begin(), b.end(), std::inserter(res, res.begin()));
+	return res;
+}
+
+template<typename T, typename U>
+std::set<T> map_key_set(const std::map<T, U>& map) {
+	std::set<T> res{};
+	for (auto it = map.begin(); it != map.end(); ++it) {
+		res.insert(it->first);
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::vector<T> map_key_list(const std::map<T, U>& map) {
+	std::vector<T> res{};
+	for (auto it = map.begin(); it != map.end(); ++it) {
+		res.push_back(it->first);
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::set<T> map_key_set(const std::unordered_map<T, U>& map) {
+	std::set<T> res{};
+	for (auto it = map.begin(); it != map.end(); ++it) {
+		res.insert(it->first);
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::vector<T> map_key_list(const std::unordered_map<T, U>& map) {
+	std::vector<T> res{};
+	for (auto it = map.begin(); it != map.end(); ++it) {
+		res.push_back(it->first);
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::unordered_map<T, U> invert_map(const std::unordered_map<U, T>& map) {
+	std::unordered_map<T, U> res{};
+	for (const auto& [key, value] : map) {
+		res[value] = key;
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::unordered_map<T, std::vector<U>> invert_map_vec(const std::unordered_map<U, std::vector<T>>& map) {
+	std::unordered_map<T, std::vector<U>> res{};
+	for (const auto& [key, values] : map) {
+		for (const auto& value : values) {
+			auto it = res.find(value);
+			if (it == res.end()) {
+				res.emplace(value, std::vector<U>{key});
+			} else {
+				it->second.push_back(key);
+			}
+		}
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::map<T, U> invert_map(const std::map<U, T>& map) {
+	std::map<T, U> res{};
+	for (const auto& [key, value] : map) {
+		res[value] = key;
+	}
+	return res;
+}
+
+template<typename T, typename U>
+std::map<T, std::vector<U>> invert_map_vec(const std::map<U, std::vector<T>>& map) {
+	std::map<T, std::vector<U>> res{};
+	for (const auto& [key, values] : map) {
+		for (const auto& value : values) {
+			auto it = res.find(value);
+			if (it == res.end()) {
+				res.emplace(value, std::vector<U>{key});
+			} else {
+				it->second.push_back(key);
+			}
+		}
+	}
+	return res;
 }
 
 #endif //UTILS_H
