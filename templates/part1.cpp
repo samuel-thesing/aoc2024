@@ -1,8 +1,31 @@
 #include <utils.hpp>
 
 int solve(const std::string &input) {
+	int result = 0;
 
-	return 0;
+	auto blocks = split(input, "\n\n");
+
+	for (const auto& block : blocks) {
+		auto lines = split(block, "\n");
+		auto lines2 = split_int(block, "\n");
+
+
+        const auto [] = extract_data<>(block, std::regex(""));
+
+		for (const auto& line : lines) {
+
+		}
+
+	}
+
+	auto lines = split(input, "\n");
+	auto lines2 = split_int(input, "\n");
+
+    for (const auto& line : lines) {
+    	const auto [] = extract_data<>(line, std::regex(""));
+    }
+
+	return result;
 }
 
 int main(int argc, char** argv) {
