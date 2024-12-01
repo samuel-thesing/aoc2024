@@ -367,8 +367,8 @@ std::pair<std::string, std::string> split_once(const std::string& s, const std::
 	return {s.substr(0, idx), s.substr(idx + delim.size())};
 }
 
-template<typename T>
-std::pair<T, T> split_once(const std::string& s, const std::string& delim) {
+template<typename T, typename U>
+std::pair<T, U> split_once(const std::string& s, const std::string& delim) {
 	auto idx = s.find(delim);
 	if (idx == std::string::npos) {
 		return {s, ""};
@@ -376,7 +376,7 @@ std::pair<T, T> split_once(const std::string& s, const std::string& delim) {
 
 	return {
 		string_to_generic<T>(s.substr(0, idx)),
-		string_to_generic<T>(s.substr(idx + delim.size()))
+		string_to_generic<U>(s.substr(idx + delim.size()))
 	};
 }
 
