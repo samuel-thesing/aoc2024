@@ -7,8 +7,7 @@ int solve(const std::string &input) {
 
 	auto pattern = std::regex(" +");
 
-	std::vector<int> vec1{};
-	std::vector<int> vec2{};
+	std::vector<int> vec1{}, vec2{};
     for (const auto& line : lines) {
     	const auto [a, b] = split_once_regex<int, int>(line, pattern);
     	vec1.push_back(a);
@@ -25,7 +24,7 @@ int solve(const std::string &input) {
 }
 
 int main(int argc, char** argv) {
-    auto runner = Runner<int>(solve, 2024, 01);
+    auto runner = Runner<int>(solve, 2024, 1);
     runner.add_test_file("t1.txt", 11);
 
     runner.add_input_file("i1.txt");
