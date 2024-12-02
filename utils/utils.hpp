@@ -951,4 +951,20 @@ std::map<T, std::vector<U>> invert_map_vec(const std::map<U, std::vector<T>>& ma
 	return res;
 }
 
+std::vector<int> diffs(const std::vector<int>& vec) {
+	std::vector<int> res{};
+	for (int i = 0; i < vec.size()-1; ++i) {
+		res.push_back(vec[i+1] - vec[i]);
+	}
+	return res;
+}
+
+std::vector<int> diffs(const std::vector<int>& vec1, const std::vector<int>& vec2) {
+	std::vector<int> res{};
+	for (int i = 0; i < min(vec1.size(), vec2.size()); ++i) {
+		res.push_back(vec2[i] - vec1[i]);
+	}
+	return res;
+}
+
 #endif //UTILS_H
