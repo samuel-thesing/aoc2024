@@ -2,14 +2,20 @@
 
 Ich hatte keine Lust auf meine Seminararbeit und wollte irgendwie prokrastinieren ...
 
-Es muss nur das Jahr in `generateDays.py` angepasst werden.
+# How to use
 
-- `/templates` dises Dateien werden für jeden Tag kopiert, wenn `generateDays.py` ausgeführt wird (ein bisschen replace um den Tag und das Jahr reinzubringen)\
-- `/deps` libraries; für jetzt erstmal nur spdlog\
-- `/src` enthält einen Ordner für jeden Tag
-  - Textdateine sind für größere Input-Strings; Präfix "t" steht für for "Test"\
-- `/utils` ein paar kleine Util-Funktionen;
-  - `extract_data<Ts...>(pattern, string)` regex_match, wobei die captures in die angegebenen Typen umgewandelt werden. Um andere Typen zu unterstützen einfach die Template-Specialization von `generic_from_string<T>(string)` implementieren. 
+1. Jahr in [`generateDays.py`](generateDays.py) anpassen
+2. [`generateDays.py`](generateDays.py) ausführen
+
+# Was ist drin?
+
+- [`/templates`](templates) dises Dateien werden für jeden Tag kopiert (ein bisschen replace um den Tag und das Jahr reinzubringen)
+- [`/deps`](deps) libraries; für jetzt erstmal nur spdlog
+- [`/src`](src) enthält einen Ordner für jeden Tag
+  - Textdateien sind für größere Input-Strings; Präfix "t" steht für for "Test"
+- [`/utils`](utils) ein paar kleine Util-Funktionen;
+  - `extract_data<Ts...>(pattern, string)` regex_match, wobei die captures in die angegebenen Typen umgewandelt werden. Um andere Typen zu unterstützen einfach die Template-Specialization von `generic_from_string<T>(string)` implementieren.\
+    (siehe auch `extract_data_all` & `extract_data_opt`)
   - `Runner<Result, Args...>(solver_fn, year, day)` Einfacher wrapper um ein bisschen boilerplate zu sparen
     - tests mit `add_test_string(string, expected, args...)` oder `add_test_file(filename, expected, args...)` hinzufügen
     - echte Inputs mit `add_input_string(string, args...)` oder `add_input_file(filename, args...)`
