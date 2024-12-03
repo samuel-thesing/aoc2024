@@ -436,6 +436,20 @@ std::tuple<Args...> extract_data(std::string s, const std::regex& pattern) {
 }
 
 template<typename... Args>
+std::vector<std::tuple<Args...>> extract_data_all(std::string s, const std::regex& pattern) {
+	std::sregex_iterator iter(s.begin(), s.end(), pattern);
+	std::sregex_iterator end;
+	std::vector<std::tuple<Args...>> result{};
+	while (iter != end) {
+		std::smatch match = *iter;
+		result.push_back(make_tuple_from_match<Args...>(match, std::index_sequence_for<Args...>{}));
+		++iter;
+	}
+
+	return result;
+}
+
+template<typename... Args>
 std::optional<std::tuple<Args...>> extract_data_opt(std::string s, const std::regex& pattern) {
 	std::smatch match;
 	if (!std::regex_match(s, match, pattern)) {
