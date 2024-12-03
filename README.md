@@ -2,12 +2,12 @@
 
 Ich hatte keine Lust auf meine Seminararbeit und wollte irgendwie prokrastinieren ...
 
-# How to use
+## How to use
 
 1. Jahr in [`generateDays.py`](generateDays.py) anpassen
 2. [`generateDays.py`](generateDays.py) ausführen
 
-# Was ist drin?
+## Was ist drin?
 
 - [`/templates`](templates) dises Dateien werden für jeden Tag kopiert (ein bisschen replace um den Tag und das Jahr reinzubringen)
 - [`/deps`](deps) libraries; für jetzt erstmal nur spdlog
@@ -23,7 +23,7 @@ Ich hatte keine Lust auf meine Seminararbeit und wollte irgendwie prokrastiniere
     - leider noch keine Unterstützung für Unit-Tests
  
 
-### Beispiele
+## Beispiele
 ```cpp
 std::regex pattern("(.+) would (.+) (\\d+) happiness units by sitting next to (.+).");
 const auto [person_a, signum, strength, person_b] =
