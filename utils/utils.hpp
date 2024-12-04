@@ -808,6 +808,32 @@ Vec2i dir_vec(Dir dir) {
 	}
 }
 
+std::vector<Vec2i> all_dirs() {
+	return {
+			{1,0},
+			{1,1},
+			{0,1},
+			{-1,1},
+			{-1,0},
+			{-1,-1},
+			{0,-1},
+			{1,-1}
+	};
+}
+
+std::vector<Vec2i> all_dirs_diag() {
+	return {
+		{1,0},
+		{1,1},
+		{0,1},
+		{-1,1},
+		{-1,0},
+		{-1,-1},
+		{0,-1},
+		{1,-1}
+	};
+}
+
 std::string str(char c) {
 	return {c};
 }
@@ -979,6 +1005,62 @@ std::vector<int> diffs(const std::vector<int>& vec1, const std::vector<int>& vec
 		res.push_back(vec2[i] - vec1[i]);
 	}
 	return res;
+}
+
+std::vector<std::string> rotate90c(const std::vector<std::string>& matrix) {
+	int n = matrix.size();
+	auto res = std::vector<std::string>{};
+
+	for (int i = 0; i < n; ++i) {
+		res.emplace_back("");
+		for (int j = 0; j < n; ++j) {
+			res[i] += matrix[n-j-1][i];
+		}
+	}
+
+	return res;
+}
+
+template<typename T>
+std::vector<std::vector<T>> rotate90c(const std::vector<std::vector<T>>& matrix) {
+	int n = matrix.size();
+	auto res = std::vector<std::vector<T>>{};
+	for (int i = 0; i < n; ++i) {
+		res.emplace_back(std::vector<T>{});
+	}
+
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			res[i].emplace_back(matrix[n-j-1][i]);
+		}
+	}
+
+	return res;
+}
+
+template<typename T>
+std::vector<std::vector<T>> rotate90cc(const std::vector<std::vector<T>>& matrix) {
+	int n = matrix.size();
+	auto res = std::vector<std::vector<T>>{};
+	for (int i = 0; i < n; ++i) {
+		res.emplace_back(std::vector<T>{});
+	}
+
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			res[i].emplace_back(matrix[j][n-i-1]);
+		}
+	}
+
+	return res;
+}
+
+bool inbounds(int x, int y, int w, int h) {
+	return x >= 0 && y >= 0 && x < w && y < h;
+}
+
+bool inbounds(int x, int y, int w, int h, int bw, int bh) {
+	return x >= 0 && y >= 0 && x < w-bw+1 && y < h-bh+1;
 }
 
 #endif //UTILS_H
