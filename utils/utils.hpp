@@ -736,6 +736,8 @@ public:
 	std::vector<Result> run() {
 		if (!run_tests()) return {};
 		run_inputs();
+
+		Logger::info("");
 		return results;
 	}
 };
@@ -806,6 +808,7 @@ Vec2i dir_vec(Dir dir) {
     	case Dir::UP: return {0, -1};
     	case Dir::DOWN: return {0, 1};
 	}
+	return {0, 0};
 }
 
 std::vector<Vec2i> all_dirs() {

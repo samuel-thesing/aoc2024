@@ -5,6 +5,7 @@
 
 class Logger {
 private:
+	static bool initialized;
 	static std::shared_ptr<spdlog::logger> logger;
 
 public:

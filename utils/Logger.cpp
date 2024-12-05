@@ -7,8 +7,12 @@
 #include <vector>
 
 std::shared_ptr<spdlog::logger> Logger::logger = nullptr;
+bool Logger::initialized = false;
 
 void Logger::init() {
+	if (initialized) return;
+	initialized = true;
+
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
 	sinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("Log.log", true));
