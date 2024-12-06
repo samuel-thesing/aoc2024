@@ -858,6 +858,8 @@ typedef Matrix<3, 3, double> Mat3d;
 typedef Matrix<4, 4, double> Mat4d;
 
 typedef Matrix<2, 1, int> Vec2i;
+typedef Matrix<3, 1, int> Vec3i;
+typedef Matrix<4, 1, int> Vec4i;
 typedef Matrix<2, 1, unsigned> Vec2u;
 typedef Matrix<2, 1, unsigned long long> Vec2ul;
 

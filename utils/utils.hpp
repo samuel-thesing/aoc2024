@@ -1066,4 +1066,28 @@ bool inbounds(int x, int y, int w, int h, int bw, int bh) {
 	return x >= 0 && y >= 0 && x < w-bw+1 && y < h-bh+1;
 }
 
+Vec2i arrow_dir(char c) {
+	switch (c) {
+		case '^': return {0, -1};
+		case 'v': return {0, 1};
+		case '>': return {1, 0};
+		case '<': return {-1, 0};
+		default: Logger::critical("Unrecognized arrow direction '{}'", c);
+	}
+}
+
+template<typename T, typename U>
+struct std::hash<std::pair<T, U>> {
+	size_t operator()(const std::pair<T, U>& pair) const noexcept {
+		return std::hash<T>()(pair.first) ^ std::hash<U>()(pair.second);
+	}
+};
+
+template<typename... Ts>
+struct std::hash<std::tuple<Ts...>> {
+	size_t operator()(const std::tuple<Ts...>& tuple) const noexcept {
+		return std::apply([](const auto& ... xs){ return (std::hash<Ts>()(xs) ^ ...); }, tuple);
+	}
+};
+
 #endif //UTILS_H
