@@ -361,7 +361,7 @@ std::vector<int> split_int(const std::string& s, const std::string& delim) {
 std::pair<std::string, std::string> split_once(const std::string& s, const std::string& delim) {
 	auto idx = s.find(delim);
 	if (idx == std::string::npos) {
-		return {s, ""};
+		Logger::critical("Failed split_once");
 	}
 
 	return {s.substr(0, idx), s.substr(idx + delim.size())};
@@ -371,7 +371,7 @@ template<typename T, typename U>
 std::pair<T, U> split_once(const std::string& s, const std::string& delim) {
 	auto idx = s.find(delim);
 	if (idx == std::string::npos) {
-		return {s, ""};
+		Logger::critical("Failed split_once");
 	}
 
 	return {
@@ -384,7 +384,7 @@ template<typename T>
 std::pair<T, T> split_once(const std::string& s, const std::string& delim, std::function<T(std::string)> fn) {
 	auto idx = s.find(delim);
 	if (idx == std::string::npos) {
-		return {s, ""};
+		Logger::critical("Failed split_once");
 	}
 
 	return {
