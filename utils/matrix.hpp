@@ -526,7 +526,17 @@ public:
         return result;
     }
 
-    friend std::ostream& operator <<(std::ostream& os, Type const& m) {
+    friend std::ostream& operator <<(std::ostream& os, Type const& m) requires (N == 1) {
+        os << '{';
+        for (int i = 0; i < M; i++) {
+            os << m.get(i);
+            if (i != M-1) os << ", ";
+        }
+        os << "}";
+        return os;
+    }
+
+    friend std::ostream& operator <<(std::ostream& os, Type const& m) requires (N != 1) {
         os << '{';
         for (int i = 0; i < M; i++) {
             if (i != 0) os << ' ';
