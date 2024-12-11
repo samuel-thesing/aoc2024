@@ -1086,4 +1086,8 @@ struct std::hash<std::tuple<Ts...>> {
 	}
 };
 
+inline int num_len(long long n) {
+	return static_cast<int>(std::log10(n)) + 1;
+}
+
 #endif //UTILS_H
