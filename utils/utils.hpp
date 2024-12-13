@@ -18,6 +18,7 @@
 #include <iostream>
 #include <functional>
 #include <sstream>
+#include <numeric>
 
 #include <Logger.hpp>
 
