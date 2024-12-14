@@ -635,19 +635,19 @@ public:
 	}
 
 	void add_test_string(const std::string& input, Result expected, Args... args) {
-		tests.push_back(Test<Result, Args...>(input, expected, false, args...));
+		tests.push_back(Test<Result, Args...>(input, expected, false, {args...}));
 	}
 
 	void add_test_file(const std::string& filename, Result expected, Args... args) {
-		tests.push_back(Test<Result, Args...>(filename, expected, true, args...));
+		tests.push_back(Test<Result, Args...>(filename, expected, true, {args...}));
 	}
 
 	void add_input_string(const std::string& input, Args... args) {
-		inputs.push_back(Input<Args...>(input, false, args...));
+		inputs.push_back(Input<Args...>(input, false, {args...}));
 	}
 
 	void add_input_file(const std::string& filename, Args... args) {
-		inputs.push_back(Input<Args...>(filename, true, args...));
+		inputs.push_back(Input<Args...>(filename, true, {args...}));
 	}
 
 	bool run_test(const Test<Result, Args...>& test) {
@@ -1089,6 +1089,11 @@ struct std::hash<std::tuple<Ts...>> {
 
 inline int num_len(long long n) {
 	return static_cast<int>(std::log10(n)) + 1;
+}
+
+template<typename T>
+T mod_math(T a, T b) {
+	return (a % b + b) % b;
 }
 
 #endif //UTILS_H
