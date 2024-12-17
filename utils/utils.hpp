@@ -1096,4 +1096,12 @@ T mod_math(T a, T b) {
 	return (a % b + b) % b;
 }
 
+template<typename T>
+constexpr std::optional<int> leading_zeros(T n) {
+	if (n == 0) return std::nullopt;
+	int i = sizeof(T) * 8 -1;
+	while (((1 << i) & n) == 0) --i;
+	return i;
+}
+
 #endif //UTILS_H
