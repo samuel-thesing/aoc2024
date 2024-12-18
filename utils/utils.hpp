@@ -667,7 +667,10 @@ public:
 			return true;
 		}
 
-		Logger::error("Failed Test '{}': Expected {} but got {}", test.input, test.expected, result);
+		std::stringstream ss;
+		ss << "Failed Test '" << test.input << "': Expected " << test.expected << " but got " << result;
+
+		Logger::error("{}", ss.str());
 		tests_failed++;
 		return false;
 	}
@@ -717,11 +720,15 @@ public:
 		auto duration =
 			std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time);
 
+		std::stringstream ss;
+		ss << "Input Finished '" << input.input << "': ";
 		if (result_transform_fn == nullptr) {
-			Logger::info("Input Finished '{}': {} ({})", input.input, result, format_time(duration));
+			ss << result;
 		} else {
-			Logger::info("Input Finished '{}': {} ({})", input.input, result_transform_fn(result), format_time(duration));
+			ss << result_transform_fn(result);
 		}
+		ss << " (" << format_time(duration) << ")";
+		Logger::info("{}", ss.str());
 
 		return result;
 	}
