@@ -289,6 +289,11 @@ inline long long string_to_generic<long long>(std::string s) {
 	return std::stoll(s);
 }
 
+template<>
+inline unsigned long long string_to_generic<unsigned long long>(std::string s) {
+	return std::stoull(s);
+}
+
 
 /**
  *	Splits a given string at the given delimiter and trims the parts
