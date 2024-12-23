@@ -1099,6 +1099,39 @@ struct std::hash<std::tuple<Ts...>> {
 	}
 };
 
+template<typename T, size_t Size>
+struct std::hash<std::array<T, Size>> {
+	size_t operator()(const std::array<T, Size>& arr) const noexcept {
+		size_t result = 0;
+		for (size_t i = 0; i < Size; ++i) {
+			result ^= std::hash<T>()(arr[i]);
+		}
+		return result;
+	}
+};
+
+template<typename T>
+struct std::hash<std::vector<T>> {
+	size_t operator()(const std::vector<T>& arr) const noexcept {
+		size_t result = 0;
+		for (const auto& e : arr) {
+			result ^= std::hash<T>()(e);
+		}
+		return result;
+	}
+};
+
+template<typename T>
+struct std::hash<std::unordered_set<T>> {
+	size_t operator()(const std::unordered_set<T>& arr) const noexcept {
+		size_t result = 0;
+		for (const auto& e : arr) {
+			result ^= std::hash<T>()(e);
+		}
+		return result;
+	}
+};
+
 inline int num_len(long long n) {
 	return static_cast<int>(std::log10(n)) + 1;
 }
