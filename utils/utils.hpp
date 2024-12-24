@@ -767,11 +767,21 @@ std::vector<size_t> find_all_idx(const std::string& s, const std::string& patter
 
 template<typename T>
 std::ostream& operator<< (std::ostream& os, const std::vector<T>& list) {
-	os << "{ ";
+	os << "vector{ ";
 	for (const T& n : list) {
 		os << n << ", ";
 	}
 	os << "}";
+	return os;
+}
+
+template<typename T>
+std::ostream& operator<< (std::ostream& os, const std::unordered_set<T>& set) {
+	os << "set( ";
+	for (const T& n : set) {
+		os << n << ", ";
+	}
+	os << ")";
 	return os;
 }
 
